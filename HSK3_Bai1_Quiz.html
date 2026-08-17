@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSK 3 · Bài 1 · Ôn tập từ vựng & ngữ pháp</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+
+  :root {
+    --orange: #E8510A;
+    --orange-light: #FFF3EE;
+    --orange-mid: #FDDCC8;
+    --black: #1A1A1A;
+    --gray: #F4F4F4;
+    --gray2: #E5E5E5;
+    --green: #2E7D32;
+    --green-light: #E8F5E9;
+    --red: #C62828;
+    --red-light: #FFEBEE;
+    --blue: #1565C0;
+    --blue-light: #E3F2FD;
+    --white: #FFFFFF;
+    --text-muted: #757575;
+    --pinyin: #C0392B;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background: #F8F6F3;
+    color: var(--black);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--orange);
+    color: white;
+    padding: 20px 24px 16px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(232,81,10,0.3);
+  }
+  header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.02em; }
+  header p  { font-size: 0.78rem; opacity: 0.88; margin-top: 2px; }
+
+  /* ── PROGRESS BAR ── */
+  #progress-wrap {
+    background: var(--gray2); height: 6px; width: 100%;
+    position: sticky; top: 72px; z-index: 99;
+  }
+  #progress-bar {
+    height: 6px; background: var(--orange);
+    transition: width 0.4s ease; width: 0%;
+  }
+
+  /* ── SECTION TABS ── */
+  .tabs {
+    display: flex; overflow-x: auto; gap: 8px;
+    padding: 16px 16px 0;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 8px 16px; border-radius: 20px;
+    border: 2px solid var(--gray2);
+    background: white; color: var(--text-muted);
+    font-family: inherit; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: var(--orange); color: white; border-color: var(--orange);
+  }
+  .tab-btn.done {
+    border-color: var(--green); color: var(--green);
+  }
+
+  /* ── MAIN CONTENT ── */
+  main { padding: 16px; max-width: 720px; margin: 0 auto; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    background: white; border-radius: var(--radius);
+    padding: 16px 20px; margin-bottom: 16px;
+    border-left: 4px solid var(--orange);
+    box-shadow: var(--shadow);
+  }
+  .section-header h2 { font-size: 1rem; font-weight: 700; color: var(--orange); }
+  .section-header p  { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── FLASHCARD ── */
+  .flashcard-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  @media(max-width:480px){ .flashcard-grid { grid-template-columns: 1fr; } }
+
+  .flashcard {
+    perspective: 800px; height: 160px; cursor: pointer;
+  }
+  .flashcard-inner {
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.45s cubic-bezier(.4,.2,.2,1);
+  }
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .card-front, .card-back {
+    position: absolute; width: 100%; height: 100%;
+    backface-visibility: hidden; border-radius: var(--radius);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 12px; box-shadow: var(--shadow);
+  }
+  .card-front {
+    background: white; border: 2px solid var(--gray2);
+  }
+  .card-back {
+    background: var(--orange-light); border: 2px solid var(--orange-mid);
+    transform: rotateY(180deg);
+  }
+  .card-zh   { font-family: 'Noto Sans SC', sans-serif; font-size: 2rem; font-weight: 700; color: var(--black); }
+  .card-py   { font-size: 0.85rem; color: var(--pinyin); margin-top: 4px; font-style: italic; }
+  .card-type { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+  .card-vn   { font-size: 1rem; font-weight: 600; color: var(--green); text-align: center; }
+  .card-ex   { font-size: 0.78rem; color: var(--black); margin-top: 6px; text-align: center; font-family: 'Noto Sans SC', sans-serif; }
+  .card-ex-vn{ font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; text-align: center; font-style: italic; }
+  .card-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; }
+
+  /* ── QUIZ ── */
+  .quiz-card {
+    background: white; border-radius: var(--radius);
+    padding: 20px; margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .q-num {
+    font-size: 0.7rem; font-weight: 700; color: var(--orange);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;
+  }
+  .q-text {
+    font-size: 1rem; font-weight: 600; color: var(--black);
+    font-family: 'Noto Sans SC', sans-serif;
+    line-height: 1.6; margin-bottom: 14px;
+  }
+  .q-text .blank {
+    display: inline-block;
+    min-width: 80px; border-bottom: 2px solid var(--orange);
+    vertical-align: bottom; text-align: center;
+    color: var(--orange); font-size: 0.9em;
+  }
+  .q-hint { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; font-style: italic; }
+
+  /* MC options */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt-btn {
+    width: 100%; text-align: left; padding: 10px 14px;
+    border: 2px solid var(--gray2); border-radius: 8px;
+    background: white; font-family: 'Noto Sans SC', sans-serif;
+    font-size: 0.92rem; cursor: pointer; transition: all 0.18s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--orange); background: var(--orange-light); }
+  .opt-btn.correct  { border-color: var(--green); background: var(--green-light); color: var(--green); font-weight: 700; }
+  .opt-btn.wrong    { border-color: var(--red);   background: var(--red-light);   color: var(--red); }
+  .opt-btn .badge   { width: 24px; height: 24px; border-radius: 50%; background: var(--gray2); color: var(--text-muted); font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .opt-btn.correct .badge { background: var(--green); color: white; }
+  .opt-btn.wrong    .badge { background: var(--red); color: white; }
+
+  /* Fill-in-the-blank */
+  .fill-wrap { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .fill-input {
+    border: 2px solid var(--gray2); border-radius: 8px;
+    padding: 8px 12px; font-family: 'Noto Sans SC', sans-serif;
+    font-size: 1rem; width: 140px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .fill-input:focus { border-color: var(--orange); }
+  .fill-input.correct { border-color: var(--green); background: var(--green-light); color: var(--green); font-weight: 700; }
+  .fill-input.wrong   { border-color: var(--red);   background: var(--red-light);   color: var(--red); }
+  .check-btn {
+    padding: 8px 18px; background: var(--orange); color: white;
+    border: none; border-radius: 8px; font-family: inherit;
+    font-size: 0.88rem; font-weight: 600; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .check-btn:hover { opacity: 0.85; }
+  .check-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* Match */
+  .match-area { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .match-col { display: flex; flex-direction: column; gap: 8px; }
+  .match-item {
+    padding: 10px 12px; border-radius: 8px;
+    border: 2px solid var(--gray2); background: white;
+    font-family: 'Noto Sans SC', sans-serif; font-size: 0.92rem;
+    cursor: pointer; transition: all 0.18s; text-align: center;
+  }
+  .match-item:hover:not(.matched):not(.disabled) { border-color: var(--orange); background: var(--orange-light); }
+  .match-item.selected { border-color: var(--blue); background: var(--blue-light); }
+  .match-item.matched  { border-color: var(--green); background: var(--green-light); color: var(--green); font-weight: 700; opacity: 0.7; cursor: default; }
+  .match-item.wrong-flash { border-color: var(--red); background: var(--red-light); }
+
+  /* Feedback */
+  .feedback {
+    margin-top: 10px; padding: 8px 12px; border-radius: 8px;
+    font-size: 0.85rem; font-weight: 500; display: none;
+  }
+  .feedback.correct { background: var(--green-light); color: var(--green); display: block; }
+  .feedback.wrong   { background: var(--red-light);   color: var(--red);   display: block; }
+
+  /* ── SCORE ── */
+  #score-section {
+    text-align: center; padding: 32px 20px;
+  }
+  .score-circle {
+    width: 140px; height: 140px; border-radius: 50%;
+    background: var(--orange); color: white;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; margin: 0 auto 20px;
+    box-shadow: 0 4px 24px rgba(232,81,10,0.3);
+  }
+  .score-num  { font-size: 2.6rem; font-weight: 700; line-height: 1; }
+  .score-label{ font-size: 0.8rem; opacity: 0.88; margin-top: 4px; }
+  .score-msg  { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+  .score-sub  { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; }
+  .restart-btn{
+    padding: 12px 32px; background: var(--orange); color: white;
+    border: none; border-radius: 24px; font-family: inherit;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+  }
+
+  /* ── NAV BUTTONS ── */
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 0 24px;
+  }
+  .nav-btn {
+    padding: 10px 22px; border-radius: 24px;
+    border: 2px solid var(--orange); background: white; color: var(--orange);
+    font-family: inherit; font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; transition: all 0.18s;
+  }
+  .nav-btn.primary { background: var(--orange); color: white; }
+  .nav-btn:hover   { opacity: 0.85; }
+  .nav-btn:disabled{ opacity: 0.3; cursor: default; }
+
+  .word-bank {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+    padding: 12px; background: var(--gray); border-radius: 8px;
+  }
+  .word-chip {
+    padding: 5px 14px; border-radius: 16px;
+    background: white; border: 2px solid var(--gray2);
+    font-family: 'Noto Sans SC', sans-serif; font-size: 0.9rem;
+    cursor: pointer; transition: all 0.15s; font-weight: 600;
+  }
+  .word-chip:hover:not(.used) { border-color: var(--orange); background: var(--orange-light); }
+  .word-chip.used { opacity: 0.3; cursor: default; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎓 新HSK教程 3 · Bài 1 · 我们去机场接你们</h1>
+  <p>Ôn tập từ vựng &amp; ngữ pháp · Làm bất kỳ lúc nào trên điện thoại</p>
+</header>
+<div id="progress-wrap"><div id="progress-bar"></div></div>
+
+<!-- TABS -->
+<div class="tabs" id="tabs">
+  <button class="tab-btn active" onclick="switchTab(0)">🃏 Từ vựng</button>
+  <button class="tab-btn" onclick="switchTab(1)">✅ Trắc nghiệm</button>
+  <button class="tab-btn" onclick="switchTab(2)">✏️ Điền từ</button>
+  <button class="tab-btn" onclick="switchTab(3)">🔗 Ghép câu</button>
+  <button class="tab-btn" onclick="switchTab(4)">🏆 Kết quả</button>
+</div>
+
+<main>
+
+<!-- ══ SECTION 0: FLASHCARDS ══ -->
+<div class="section active" id="sec-0">
+  <div class="section-header">
+    <h2>🃏 Flashcard Từ mới</h2>
+    <p>Chạm vào thẻ để xem nghĩa · 27 từ vựng Bài 1</p>
+  </div>
+  <div class="flashcard-grid" id="flashcard-grid"></div>
+  <div class="nav-row">
+    <span style="font-size:0.82rem;color:var(--text-muted)">Học xong rồi làm bài tập →</span>
+    <button class="nav-btn primary" onclick="switchTab(1)">Làm bài tập ✅</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 1: TRẮC NGHIỆM ══ -->
+<div class="section" id="sec-1">
+  <div class="section-header">
+    <h2>✅ Trắc nghiệm</h2>
+    <p>Chọn đáp án đúng · 10 câu hỏi</p>
+  </div>
+  <div id="mc-container"></div>
+  <div class="nav-row">
+    <button class="nav-btn" onclick="switchTab(0)">← Từ vựng</button>
+    <button class="nav-btn primary" onclick="switchTab(2)">Điền từ ✏️</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 2: ĐIỀN TỪ ══ -->
+<div class="section" id="sec-2">
+  <div class="section-header">
+    <h2>✏️ Điền từ vào chỗ trống</h2>
+    <p>Chọn từ đúng từ ngân hàng từ · 8 câu</p>
+  </div>
+  <div id="fill-container"></div>
+  <div class="nav-row">
+    <button class="nav-btn" onclick="switchTab(1)">← Trắc nghiệm</button>
+    <button class="nav-btn primary" onclick="switchTab(3)">Ghép câu 🔗</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 3: GHÉP CÂU ══ -->
+<div class="section" id="sec-3">
+  <div class="section-header">
+    <h2>🔗 Ghép câu / Nối từ</h2>
+    <p>Nối cột trái với cột phải · 10 cặp</p>
+  </div>
+  <div id="match-container"></div>
+  <div class="nav-row">
+    <button class="nav-btn" onclick="switchTab(2)">← Điền từ</button>
+    <button class="nav-btn primary" onclick="showScore()">Xem kết quả 🏆</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 4: KẾT QUẢ ══ -->
+<div class="section" id="sec-4">
+  <div id="score-section">
+    <div class="score-circle">
+      <div class="score-num" id="score-num">0</div>
+      <div class="score-label">điểm</div>
+    </div>
+    <div class="score-msg" id="score-msg"></div>
+    <div class="score-sub" id="score-sub"></div>
+    <button class="restart-btn" onclick="restart()">🔄 Làm lại từ đầu</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════
+// DATA
+// ══════════════════════════════════
+const vocab = [
+  {zh:'以为',py:'yǐwéi',   type:'v.',   vn:'cho rằng; tưởng rằng', ex:'我以为他是刘明。',    exVn:'Tôi tưởng anh ấy là Lưu Minh.'},
+  {zh:'像',  py:'xiàng',   type:'v.',   vn:'giống như',             ex:'他很像我哥哥。',      exVn:'Anh ấy rất giống anh trai tôi.'},
+  {zh:'长',  py:'zhǎng',   type:'v.',   vn:'mọc; lớn; phát triển', ex:'她长得很漂亮。',      exVn:'Cô ấy trông rất xinh đẹp.'},
+  {zh:'身高',py:'shēngāo', type:'n.',   vn:'chiều cao',             ex:'他身高一米八。',      exVn:'Anh ấy cao 1m80.'},
+  {zh:'米',  py:'mǐ',      type:'m.',   vn:'mét',                   ex:'她身高一米六五。',    exVn:'Cô ấy cao 1m65.'},
+  {zh:'瘦',  py:'shòu',    type:'adj.', vn:'gầy',                   ex:'他比我瘦一点儿。',    exVn:'Anh ấy gầy hơn tôi một chút.'},
+  {zh:'接',  py:'jiē',     type:'v.',   vn:'đón; đến đón',          ex:'我去机场接朋友。',    exVn:'Tôi ra sân bay đón bạn.'},
+  {zh:'行李',py:'xíngli',  type:'n.',   vn:'hành lý',               ex:'我的行李很多。',      exVn:'Hành lý của tôi rất nhiều.'},
+  {zh:'丢',  py:'diū',     type:'v.',   vn:'làm mất',               ex:'我丢了护照。',        exVn:'Tôi làm mất hộ chiếu.'},
+  {zh:'箱子',py:'xiāngzi', type:'n.',   vn:'cái vali; thùng',       ex:'我的箱子是黑色的。',  exVn:'Vali của tôi màu đen.'},
+  {zh:'号码',py:'hàomǎ',   type:'n.',   vn:'số (điện thoại...)',     ex:'你的电话号码是多少？',exVn:'Số điện thoại của bạn là bao nhiêu?'},
+  {zh:'好像',py:'hǎoxiàng',type:'adv.', vn:'hình như; có vẻ',       ex:'她好像生病了。',      exVn:'Cô ấy hình như bị ốm.'},
+  {zh:'重要',py:'zhòngyào',type:'adj.', vn:'quan trọng',             ex:'护照很重要。',        exVn:'Hộ chiếu rất quan trọng.'},
+  {zh:'着急',py:'zháojí',  type:'adj.', vn:'lo lắng; sốt ruột',     ex:'别着急，慢慢来。',    exVn:'Đừng lo, từ từ thôi.'},
+  {zh:'护照',py:'hùzhào',  type:'n.',   vn:'hộ chiếu',              ex:'出国要带护照。',      exVn:'Đi nước ngoài phải mang hộ chiếu.'},
+  {zh:'服务台',py:'fúwùtái',type:'n.',  vn:'quầy phục vụ',          ex:'服务台在右边。',      exVn:'Quầy phục vụ ở bên phải.'},
+  {zh:'应该',py:'yīnggāi', type:'mod.', vn:'nên; phải',             ex:'你应该多休息。',      exVn:'Bạn nên nghỉ ngơi nhiều hơn.'},
+  {zh:'站',  py:'zhàn',    type:'v.',   vn:'đứng',                  ex:'请站到中间去。',      exVn:'Vui lòng đứng vào giữa.'},
+  {zh:'中间',py:'zhōngjiān',type:'n.',  vn:'ở giữa',                ex:'他站在中间。',        exVn:'Anh ấy đứng ở giữa.'},
+  {zh:'短',  py:'duǎn',    type:'adj.', vn:'ngắn (độ dài)',          ex:'她的头发很短。',      exVn:'Tóc của cô ấy rất ngắn.'},
+  {zh:'头发',py:'tóufa',   type:'n.',   vn:'tóc',                   ex:'他是短头发。',        exVn:'Anh ấy có tóc ngắn.'},
+  {zh:'年轻',py:'niánqīng',type:'adj.', vn:'trẻ (tuổi)',             ex:'她看起来很年轻。',    exVn:'Cô ấy trông rất trẻ.'},
+  {zh:'发现',py:'fāxiàn',  type:'v.',   vn:'phát hiện',             ex:'我发现箱子不见了。',  exVn:'Tôi phát hiện vali mất.'},
+  {zh:'不见',py:'bújiàn',  type:'v.',   vn:'mất; biến mất',         ex:'我的手机不见了。',    exVn:'Điện thoại của tôi mất rồi.'},
+  {zh:'带',  py:'dài',     type:'v.',   vn:'mang; dẫn; đưa',        ex:'请带着护照来。',      exVn:'Vui lòng mang hộ chiếu đến.'},
+  {zh:'帮助',py:'bāngzhù', type:'v.',   vn:'giúp đỡ',               ex:'谢谢你的帮助。',      exVn:'Cảm ơn sự giúp đỡ của bạn.'},
+  {zh:'照片',py:'zhàopiàn',type:'n.',   vn:'ảnh; hình',             ex:'这是他的照片。',      exVn:'Đây là ảnh của anh ấy.'},
+];
+
+const mcQuestions = [
+  {q:'我______他是杨同乐，但他其实叫李文。',opts:['以为','认为','好像','发现'],ans:0,hint:'Dùng từ nào khi "tưởng nhầm"?'},
+  {q:'李文的身高有一______八。',opts:['尺','米','分','公里'],ans:1,hint:'Đơn vị đo chiều cao bằng tiếng Trung?'},
+  {q:'他比同乐高，但看起来比同乐______一点儿。',opts:['胖','矮','瘦','短'],ans:2,hint:'Từ nào nghĩa là "gầy"?'},
+  {q:'飞机到了，刘明和王一雪去机场______白家月他们。',opts:['找','送','接','带'],ans:2,hint:'Đi đón ai đó ở sân bay dùng từ gì?'},
+  {q:'白家月的行李______了，箱子不见了。',opts:['坏','丢','找','拿'],ans:1,hint:'Từ nào nghĩa là "bị mất"?'},
+  {q:'箱子里有很多______的东西，所以白家月很着急。',opts:['漂亮','有名','重要','好看'],ans:2,hint:'Từ nào nghĩa là "quan trọng"?'},
+  {q:'别______，我们去服务台问问吧。',opts:['高兴','着急','年轻','重要'],ans:1,hint:'Từ nào nghĩa là "lo lắng / sốt ruột"?'},
+  {q:'我们______到中间去，这样他们好找一些。',opts:['坐','走','站','跑'],ans:2,hint:'Từ nào nghĩa là "đứng"?'},
+  {q:'那个穿黑衣服的______头发的年轻人是李文吗？',opts:['长','短','黑','白'],ans:1,hint:'Bài nói tóc ngắn — từ nào?'},
+  {q:'她______起来比照片上年轻。',opts:['看','想','说','听'],ans:0,hint:'Cấu trúc "trông có vẻ..." dùng gì?'},
+];
+
+const fillQuestions = [
+  {bank:['带','接','丢','重要','应该'],
+   items:[
+    {q:'服务台______在前面，我们过去问问吧。',ans:'应该',hint:'应该'},
+    {q:'他已经到了，我们快出去______他吧。',ans:'接',hint:'接'},
+    {q:'我的护照不见了，是不是在机场______了？',ans:'丢',hint:'丢'},
+    {q:'行李票很______，你们出机场的时候有人看。',ans:'重要',hint:'重要'},
+    {q:'我______了两个行李箱和一个大包，所以走得很慢。',ans:'带',hint:'带'},
+  ]},
+  {bank:['发现','以为','好像','年轻','帮助'],
+   items:[
+    {q:'这个头发很短的男孩儿是我弟弟。 —— 我______这个是你！',ans:'以为',hint:'以为'},
+    {q:'我______坐飞机来北京的人非常多。',ans:'好像',hint:'好像'},
+    {q:'你哥哥看起来也很______。',ans:'年轻',hint:'年轻'},
+    {q:'你的行李箱找到了。—— 太好了！谢谢您的______。',ans:'帮助',hint:'帮助'},
+  ]},
+];
+
+const matchData = [
+  {left:'以为 (yǐwéi)',     right:'cho rằng; tưởng rằng'},
+  {left:'看起来 (kàn qǐlái)', right:'trông có vẻ...'},
+  {left:'护照 (hùzhào)',    right:'hộ chiếu'},
+  {left:'行李 (xíngli)',    right:'hành lý'},
+  {left:'服务台 (fúwùtái)', right:'quầy phục vụ'},
+  {left:'着急 (zháojí)',    right:'lo lắng; sốt ruột'},
+  {left:'年轻 (niánqīng)',  right:'trẻ (tuổi)'},
+  {left:'帮助 (bāngzhù)',   right:'giúp đỡ'},
+  {left:'哪儿 (nǎr)',       right:'đâu đó (không xác định)'},
+  {left:'多项定语',         right:'nhiều định ngữ trước danh từ'},
+];
+
+// ══════════════════════════════════
+// STATE
+// ══════════════════════════════════
+let scores = {mc:0, fill:0, match:0};
+let mcAnswered = 0, fillAnswered = 0, matchScore = 0;
+
+// ══════════════════════════════════
+// INIT
+// ══════════════════════════════════
+function init() {
+  buildFlashcards();
+  buildMC();
+  buildFill();
+  buildMatch();
+}
+
+// ══════════════════════════════════
+// FLASHCARDS
+// ══════════════════════════════════
+function buildFlashcards() {
+  const grid = document.getElementById('flashcard-grid');
+  grid.innerHTML = vocab.map((v,i) => `
+    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="card-front">
+          <div class="card-zh">${v.zh}</div>
+          <div class="card-py">${v.py}</div>
+          <div class="card-type">[${v.type}]</div>
+          <div class="card-hint" style="margin-top:12px">👆 Chạm để xem nghĩa</div>
+        </div>
+        <div class="card-back">
+          <div class="card-vn">${v.vn}</div>
+          <div class="card-ex">${v.ex}</div>
+          <div class="card-ex-vn">${v.exVn}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════
+// MULTIPLE CHOICE
+// ══════════════════════════════════
+function buildMC() {
+  const container = document.getElementById('mc-container');
+  container.innerHTML = mcQuestions.map((q,qi) => `
+    <div class="quiz-card" id="mc-${qi}">
+      <div class="q-num">Câu ${qi+1} / ${mcQuestions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-hint">💡 ${q.hint}</div>
+      <div class="options">
+        ${q.opts.map((o,oi) => `
+          <button class="opt-btn" onclick="checkMC(${qi},${oi})" id="mc-${qi}-${oi}">
+            <span class="badge">${String.fromCharCode(65+oi)}</span>
+            <span>${o}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="feedback" id="fb-mc-${qi}"></div>
+    </div>
+  `).join('');
+}
+
+function checkMC(qi, chosen) {
+  const q = mcQuestions[qi];
+  const correct = q.ans;
+  const fb = document.getElementById(`fb-mc-${qi}`);
+  for(let i=0;i<q.opts.length;i++){
+    const btn = document.getElementById(`mc-${qi}-${i}`);
+    btn.disabled = true;
+    if(i === correct) btn.classList.add('correct');
+    else if(i === chosen) btn.classList.add('wrong');
+  }
+  if(chosen === correct){
+    fb.textContent = '✅ Chính xác!'; fb.className = 'feedback correct';
+    scores.mc++;
+  } else {
+    fb.textContent = `❌ Đáp án đúng: ${q.opts[correct]}`; fb.className = 'feedback wrong';
+  }
+  mcAnswered++;
+  updateProgress();
+}
+
+// ══════════════════════════════════
+// FILL IN THE BLANK
+// ══════════════════════════════════
+function buildFill() {
+  const container = document.getElementById('fill-container');
+  let html = '';
+  let globalIdx = 0;
+  fillQuestions.forEach((group, gi) => {
+    html += `<div class="word-bank" id="bank-${gi}">
+      🗃️ Ngân hàng từ: &nbsp;
+      ${group.bank.map((w,wi) => `<span class="word-chip" id="chip-${gi}-${wi}" onclick="selectChip(${gi},${wi},'${w}')">${w}</span>`).join('')}
+    </div>`;
+    group.items.forEach((item, ii) => {
+      const idx = globalIdx++;
+      html += `<div class="quiz-card">
+        <div class="q-num">Câu ${idx+1}</div>
+        <div class="q-text">${item.q.replace('______','<span class="blank" id="blank-${gi}-${ii}">______</span>')}</div>
+        <div class="fill-wrap">
+          <input class="fill-input" id="fill-${gi}-${ii}" placeholder="Nhập đáp án..." 
+            data-ans="${item.ans}" data-gi="${gi}" data-ii="${ii}"
+            onkeydown="if(event.key==='Enter')checkFill(${gi},${ii})"/>
+          <button class="check-btn" id="fillbtn-${gi}-${ii}" onclick="checkFill(${gi},${ii})">Kiểm tra</button>
+        </div>
+        <div class="feedback" id="fb-fill-${gi}-${ii}"></div>
+      </div>`;
+    });
+  });
+  container.innerHTML = html;
+}
+
+let selectedChip = null;
+function selectChip(gi, wi, word) {
+  selectedChip = {gi, wi, word};
+  document.querySelectorAll('.word-chip').forEach(c => c.style.outline='');
+  document.getElementById(`chip-${gi}-${wi}`).style.outline = '2px solid var(--orange)';
+}
+
+function checkFill(gi, ii) {
+  const input = document.getElementById(`fill-${gi}-${ii}`);
+  const ans = input.dataset.ans;
+  const val = input.value.trim();
+  const fb = document.getElementById(`fb-fill-${gi}-${ii}`);
+  const btn = document.getElementById(`fillbtn-${gi}-${ii}`);
+  const blank = document.getElementById(`blank-${gi}-${ii}`);
+  if(!val) return;
+  input.disabled = true; btn.disabled = true;
+  if(val === ans){
+    input.classList.add('correct');
+    blank.textContent = ans; blank.style.color='var(--green)';
+    fb.textContent = '✅ Chính xác!'; fb.className='feedback correct';
+    scores.fill++;
+  } else {
+    input.classList.add('wrong');
+    fb.textContent = `❌ Đáp án đúng: ${ans}`; fb.className='feedback wrong';
+    blank.textContent = ans; blank.style.color='var(--green)';
+  }
+  fillAnswered++;
+  updateProgress();
+}
+
+// ══════════════════════════════════
+// MATCHING
+// ══════════════════════════════════
+let matchState = {selected: null, matched: new Set(), score: 0};
+const shuffledRight = [...matchData].sort(() => Math.random()-0.5);
+
+function buildMatch() {
+  const container = document.getElementById('match-container');
+  container.innerHTML = `
+    <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:12px">
+      Chọn 1 ô bên trái → rồi chọn nghĩa tương ứng bên phải
+    </div>
+    <div class="match-area">
+      <div class="match-col" id="match-left">
+        ${matchData.map((m,i) => `<div class="match-item" id="ml-${i}" onclick="selectLeft(${i})">${m.left}</div>`).join('')}
+      </div>
+      <div class="match-col" id="match-right">
+        ${shuffledRight.map((m,i) => `<div class="match-item" id="mr-${i}" onclick="selectRight(${i})">${m.right}</div>`).join('')}
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:0.85rem;color:var(--text-muted)">
+      Đã ghép: <span id="match-count">0</span> / ${matchData.length}
+    </div>
+  `;
+}
+
+function selectLeft(i) {
+  if(matchState.matched.has('L'+i)) return;
+  document.querySelectorAll('.match-item').forEach(el => el.classList.remove('selected'));
+  matchState.selected = {side:'left', i};
+  document.getElementById(`ml-${i}`).classList.add('selected');
+}
+
+function selectRight(i) {
+  if(matchState.matched.has('R'+i)) return;
+  if(!matchState.selected || matchState.selected.side !== 'left') {
+    document.querySelectorAll('.match-item').forEach(el => el.classList.remove('selected'));
+    matchState.selected = {side:'right', i};
+    document.getElementById(`mr-${i}`).classList.add('selected');
+    return;
+  }
+  const li = matchState.selected.i;
+  const correctRight = shuffledRight[i];
+  const expectedRight = matchData[li].right;
+  document.querySelectorAll('.match-item').forEach(el => el.classList.remove('selected'));
+  if(correctRight.right === expectedRight) {
+    document.getElementById(`ml-${li}`).classList.add('matched');
+    document.getElementById(`mr-${i}`).classList.add('matched');
+    matchState.matched.add('L'+li); matchState.matched.add('R'+i);
+    matchState.score++;
+    scores.match = matchState.score;
+    document.getElementById('match-count').textContent = matchState.score;
+  } else {
+    document.getElementById(`ml-${li}`).classList.add('wrong-flash');
+    document.getElementById(`mr-${i}`).classList.add('wrong-flash');
+    setTimeout(() => {
+      document.getElementById(`ml-${li}`).classList.remove('wrong-flash');
+      document.getElementById(`mr-${i}`).classList.remove('wrong-flash');
+    }, 600);
+  }
+  matchState.selected = null;
+  updateProgress();
+}
+
+// ══════════════════════════════════
+// PROGRESS + SCORE
+// ══════════════════════════════════
+function updateProgress() {
+  const total = mcQuestions.length + fillQuestions.reduce((a,g)=>a+g.items.length,0) + matchData.length;
+  const done = mcAnswered + fillAnswered + matchState.score;
+  document.getElementById('progress-bar').style.width = Math.min(100, done/total*100) + '%';
+}
+
+function showScore() {
+  switchTab(4);
+  const mc = scores.mc;
+  const fill = scores.fill;
+  const match = scores.match;
+  const total = mc + fill + match;
+  const max = mcQuestions.length + fillQuestions.reduce((a,g)=>a+g.items.length,0) + matchData.length;
+  const pct = Math.round(total/max*100);
+  document.getElementById('score-num').textContent = pct + '%';
+  document.getElementById('score-sub').textContent =
+    `Trắc nghiệm: ${mc}/${mcQuestions.length} · Điền từ: ${fill}/${fillQuestions.reduce((a,g)=>a+g.items.length,0)} · Ghép câu: ${match}/${matchData.length}`;
+  let msg = pct >= 90 ? '🏆 Xuất sắc! Bạn đã nắm vững bài 1!'
+          : pct >= 70 ? '👍 Tốt lắm! Ôn lại các câu sai nhé.'
+          : pct >= 50 ? '📚 Cố gắng thêm! Xem lại flashcard nhé.'
+          : '💪 Hãy xem lại từ vựng và làm lại!';
+  document.getElementById('score-msg').textContent = msg;
+}
+
+function restart() {
+  scores = {mc:0, fill:0, match:0};
+  mcAnswered = 0; fillAnswered = 0;
+  matchState = {selected:null, matched: new Set(), score:0};
+  buildMC(); buildFill(); buildMatch();
+  document.getElementById('progress-bar').style.width = '0%';
+  switchTab(0);
+}
+
+// ══════════════════════════════════
+// TAB SWITCH
+// ══════════════════════════════════
+function switchTab(idx) {
+  document.querySelectorAll('.section').forEach((s,i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', i === idx);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+init();
+</script>
+</body>
+</html>
